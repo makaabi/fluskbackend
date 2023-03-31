@@ -9,7 +9,29 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from User import User
 
 
+def setNotification(x):
+	_id=x['_id']
+	filter={'_id': ObjectId(_id['$oid']) if '$oid' in _id else ObjectId(_id)}
+	mongo.db.user.update_one(filter, {'$pull':{ "notification": {} } })
+	citylist=x['villes']
+	
+	for item in citylist:
+		a=loads(requests.get('http://127.0.0.1:5000/mycitiesweather?lat='+str(item['lat'])+'&lon='+str(item['lon'])).text) 
+		degr=a['main']['temp']
+		if(degr>=200):
+			prob="heatwave"
+			#user = mongo.db.user.find_one({'_id':_id},{'notification':{'ville':item['ville']}})
+			#print(user)
+			
+			mongo.db.user.update_one(filter, {'$push':{ "notification": {"ville":item['ville'],"type":prob,"etat":True} } })
+			
+			
+		
 
+			
+
+	
+	    
 
 @app.route('/testapi')
 def testapi():
@@ -37,6 +59,7 @@ def log_in():
 	x=check_password_hash(res["pwd"],_password)
 	print(x)
 	if x:
+		setNotification(res)
 		return res
 	
 	return "wrong password"
