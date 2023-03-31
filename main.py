@@ -18,11 +18,11 @@ def testapi():
 
 @app.route('/weather/<lat>/<lon>',methods=['GET'])
 def weatherby(lat,lon):
-	return requests.get('http://127.0.0.1:5000/weather/?lat='+lat+'&lon='+lon).text
+	return requests.get('http://127.0.0.1:5000/weather/data?lat='+lat+'&lon='+lon).text
 
 @app.route('/forecast/<lat>/<lon>',methods=['GET'])
 def weatherforecast(lat,lon):
-	return lon
+	return requests.get('http://127.0.0.1:5000/weather/forecast?lat='+lat+'&lon='+lon).text
 
 
 @app.route('/login',methods=['POST'])
